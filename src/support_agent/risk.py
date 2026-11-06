@@ -7,7 +7,8 @@ def find_risk_reasons(message: str, category: Category) -> list[str]:
 
     normalized = message.lower()
     if category == "incident" and any(
-        term in normalized for term in ("production", "outage")
+        term in normalized 
+        for term in ("production", "outage")
     ):
         return ["production_incident"]
 

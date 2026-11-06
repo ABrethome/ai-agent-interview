@@ -38,7 +38,9 @@ def build_graph() -> CompiledStateGraph:
 
     async def create_ticket(state: SupportState) -> SupportState:
         ticket_id = await ticket_service.create(
-            state["user_id"], state["message"], state["category"]
+            state["user_id"], 
+            state["message"], 
+            state["category"],
         )
         return {
             "ticket_required": True,

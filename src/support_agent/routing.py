@@ -2,8 +2,7 @@ from support_agent.state import SupportState
 
 
 def route_by_category(state: SupportState) -> str:
-    category = state.get("category", "other")
-    return category
+    return state.get("category", "other")
 
 
 def route_by_risk(state: SupportState) -> str:

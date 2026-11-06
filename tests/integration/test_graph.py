@@ -25,12 +25,3 @@ async def test_how_to_request_completes_without_ticket(graph) -> None:
     assert result["category"] == "how_to"
     assert result["ticket_required"] is False
     assert result["status"] == "completed"
-
-
-@pytest.mark.asyncio
-async def test_graph_returns_response_fields(graph) -> None:
-    result = await graph.ainvoke(
-        {"user_id": "candidate-test", "message": "I have a question"}
-    )
-
-    assert {"category", "status", "ticket_required", "final_answer"} <= result.keys()

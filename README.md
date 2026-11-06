@@ -66,7 +66,7 @@ Health check:
 curl http://127.0.0.1:8000/health
 ```
 
-Example request:
+Support request:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/support \
@@ -77,20 +77,29 @@ curl -X POST http://127.0.0.1:8000/support \
   }'
 ```
 
-## Coding exercise
+## Initial coding exercise
 
-The support endpoint returns inconsistent guidance for some requests. Investigate the repository, restore a reliable baseline, and improve the implementation where you believe it is justified.
+User has reported that the support endpoint returns inconsistent guidance for some requests from the Support Triage Agent in Production. Understand then investigate the repository to debug.
 
 You may use GitHub Copilot or another coding assistant. You remain responsible for understanding and validating every change. Think aloud as you work. You do not need to fix or redesign everything; explain how you prioritize and the trade-offs behind your decisions. Preserve the public API contract and do not have tests call a live model provider.
 
-## Constraints
+User-reported issue with the following request via Service Desk:
+User: "Please restore my permission to the finance workspace".
+Obtained: 
+```
+{
+  "category": "other",
+  "status": "completed",
+  "answer": "Please provide the affected system and observed error.",
+  "ticket_required": false,
+  "ticket_id": null
+}
+```
+User-expected category `access`.
 
-- Keep behavior deterministic (this is a mock exercise) and tests independent of external services.
-- Do not add real access changes, credential operations, or external ticketing calls.
+## Initial definition of done
 
-## Definition of done
-
-- You can explain the observed behavior and the evidence behind your diagnosis.
-- Changes are proportionate, covered by meaningful tests, and preserve the public API contract.
-- `uv run pytest` and `uv run ruff check .` have been run, and you can explain any remaining findings or risks.
-- You have reviewed the final diff and can describe what you would prioritize next.
+- You can reproduce and explain the observed issue.
+- You find evidences behind your diagnosis.
+- You propose changes that are proportionate.
+- You propose means to avoid the observed issue in the future

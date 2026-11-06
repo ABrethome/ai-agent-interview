@@ -15,18 +15,6 @@ async def test_classifies_access_request(classifier: KeywordClassifier) -> None:
 
 
 @pytest.mark.asyncio
-async def test_classifies_permission_request_as_access(
-    classifier: KeywordClassifier,
-) -> None:
-    assert (
-        await classifier.classify(
-            "Please restore my permission to the finance workspace"
-        )
-        == "access"
-    )
-
-
-@pytest.mark.asyncio
 async def test_classifies_incident(classifier: KeywordClassifier) -> None:
     assert await classifier.classify("The reporting service is down") == "incident"
 

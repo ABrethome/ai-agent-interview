@@ -10,17 +10,38 @@ The application is a local exercise, which mocks an agent. No external API made.
 
 The `POST /support` endpoint accepts a user ID and a message. The agent classifies the request as `access`, `incident`, `how_to`, or `other`, prepares category-specific guidance, and returns a public response. Requests requiring review receive a deterministic simulated ticket ID.
 
-## High-level graph flow
-
-`START -> classify_request -> category handler -> assess_risk -> [create_ticket] -> format_response -> END`
-
-The category handler and whether a ticket is created are selected through conditional graph routing.
-
 ## Setup
 
 ```bash
 uv sync
 ```
+
+## Visualize the graph with LangGraph Studio
+
+From the repository root:
+
+```bash
+LANGGRAPH_CLI_NO_ANALYTICS=1 uv run langgraph dev --no-browser
+```
+
+Open [LangGraph Studio](https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024)
+and select `support_triage` to view the nodes and conditional edges. Studio may
+require signing in to LangSmith. The graph runs locally, without a model API key;
+the [CLI configuration](./langgraph.json) disables LangSmith tracing.
+
+To step through a run, supply this graph input in Studio:
+
+```json
+{
+  "user_id": "studio-test",
+  "message": "How do I connect to the office Wi-Fi?"
+}
+```
+
+The CLI serves a separate development API at `http://127.0.0.1:2024`
+and reloads graph changes automatically; it does not replace the FastAPI
+`/support` endpoint. Stop it with `Ctrl+C`.
+
 
 ## Tests and lint
 

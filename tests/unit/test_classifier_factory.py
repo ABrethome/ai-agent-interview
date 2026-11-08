@@ -27,7 +27,6 @@ def test_create_classifier_passes_settings_to_azure_model() -> None:
         azure_endpoint="https://example.openai.azure.com/",
         api_version="2025-03-01-preview",
         azure_deployment="test-deployment",
-        temperature=0,
     )
 
 
@@ -57,5 +56,4 @@ def test_create_classifier_does_not_pass_azure_settings_for_other_provider() -> 
 
     init_chat_model.assert_called_once_with(
         "openai:gpt-5-mini",
-        temperature=0,
     )

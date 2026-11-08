@@ -69,23 +69,6 @@ The service is available at `http://127.0.0.1:8000`.
 
 Docs: `http://127.0.0.1:8000/docs`
 
-Health check:
-
-```bash
-curl http://127.0.0.1:8000/health
-```
-
-Support request:
-
-```bash
-curl -X POST http://127.0.0.1:8000/support \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "user_id": "candidate-test",
-    "message": "Please restore my access to the finance workspace"
-  }'
-```
-
 ## Initial coding exercise
 
 User has reported that the support endpoint returns inconsistent guidance for some requests from the Support Triage Agent in Production, which currently uses the deterministic KeywordClassifier. Understand then investigate the repository to debug.
@@ -97,7 +80,7 @@ User-reported issue with the following request via Service Desk:
 User: 
 ```json
 {
-  "user_id": "alex",
+  "user_id": "candidate-test",
   "message": "Please restore my permission to the finance workspace?"
 }
 ```

@@ -101,3 +101,7 @@ def build_graph() -> CompiledStateGraph:
     graph.add_edge("create_ticket", "format_response")
     graph.add_edge("format_response", END)
     return graph.compile()
+
+
+def build_studio_graph() -> CompiledStateGraph:
+    return build_graph()

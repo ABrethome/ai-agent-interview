@@ -4,7 +4,7 @@
 
 This repository contains a small internal IT support triage agent. It classifies incoming support requests, drafts guidance, assesses whether human review is appropriate, and can prepare a simulated support ticket.
 
-The application is a local exercise, which mocks an agent. No external API made.
+The application is a local exercise with a mock ticket service. The default classifier uses keywords; an external chat model can be enabled as described below.
 
 ## Functional behavior
 
@@ -26,8 +26,17 @@ uv run langgraph dev --no-browser
 
 Open [LangGraph Studio](https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024)
 and select `support_triage` to view the nodes and conditional edges. Studio may
-require signing in to LangSmith. The graph runs locally, without a model API key;
-the [CLI configuration](./langgraph.json) disables LangSmith tracing.
+require signing in to LangSmith. By default, the graph uses keyword
+classification and runs without a model API key; the
+[CLI configuration](./langgraph.json) disables LangSmith tracing.
+
+To use a chat model, set `CLASSIFIER_PROVIDER=llm` and `MODEL_NAME` in the
+environment or `.env` file. `MODEL_NAME` uses LangChain's `provider:model`
+format. For Azure OpenAI, use `MODEL_NAME=azure_openai:gpt-5-mini` and set
+`AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`,
+`AZURE_OPENAI_DEPLOYMENT_NAME`, and `OPENAI_API_VERSION` in the environment or
+`.env` file. These values are loaded by `Settings` and passed to LangChain's
+Azure chat model integration.
 
 To step through a run, supply this graph input in Studio:
 
@@ -79,7 +88,7 @@ curl -X POST http://127.0.0.1:8000/support \
 
 ## Initial coding exercise
 
-User has reported that the support endpoint returns inconsistent guidance for some requests from the Support Triage Agent in Production. Understand then investigate the repository to debug.
+User has reported that the support endpoint returns inconsistent guidance for some requests from the Support Triage Agent in Production, which currently uses the deterministic KeywordClassifier. Understand then investigate the repository to debug.
 
 You may use GitHub Copilot or another coding assistant. You remain responsible for understanding and validating every change. Think aloud as you work. You do not need to fix or redesign everything; explain how you prioritize and the trade-offs behind your decisions. Preserve the public API contract and do not have tests call a live model provider.
 

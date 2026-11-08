@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from support_agent.graph import build_graph
 from support_agent.models import SupportRequest, SupportResponse
 
+
 app = FastAPI(title="Support Triage Agent")
 support_graph = build_graph()
 

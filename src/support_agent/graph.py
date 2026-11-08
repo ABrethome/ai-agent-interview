@@ -14,6 +14,14 @@ def build_graph() -> CompiledStateGraph:
     ticket_service = InMemoryTicketService()
 
     async def classify_request(state: SupportState) -> SupportState:
+        missing_fields = [
+            field for field in ("user_id", "message") if field not in state
+        ]
+        if missing_fields:
+            raise ValueError(
+                f"Missing required state fields: {', '.join(missing_fields)}"
+            )
+
         category = await classifier.classify(state["message"])
         return {"category": category}
 

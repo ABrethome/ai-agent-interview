@@ -1,12 +1,12 @@
-from typing import Literal, TypedDict
+from typing import Literal, Required, TypedDict
 
 Category = Literal["access", "incident", "how_to", "other"]
 Status = Literal["in_progress", "completed", "needs_human_review"]
 
 
 class SupportState(TypedDict, total=False):
-    user_id: str
-    message: str
+    user_id: Required[str]
+    message: Required[str]
     category: Category
     draft_answer: str
     risk_reasons: list[str]

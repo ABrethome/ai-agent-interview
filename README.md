@@ -4,7 +4,7 @@
 
 This repository contains a small internal IT support triage agent. It classifies incoming support requests, drafts guidance, assesses whether human review is appropriate, and can prepare a simulated support ticket.
 
-The application is a local exercise, which mocks an agent. No external API made.
+The application is a local exercise with a mock ticket service. The default classifier uses keywords; an external chat model can be enabled as described below.
 
 ## Functional behavior
 
@@ -13,7 +13,7 @@ The `POST /support` endpoint accepts a user ID and a message. The agent classifi
 ## Setup
 
 ```bash
-uv sync
+uv sync --group dev
 ```
 
 ## Visualize the graph with LangGraph Studio
@@ -21,13 +21,22 @@ uv sync
 From the repository root:
 
 ```bash
-LANGGRAPH_CLI_NO_ANALYTICS=1 uv run langgraph dev --no-browser
+uv run langgraph dev --no-browser
 ```
 
 Open [LangGraph Studio](https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024)
 and select `support_triage` to view the nodes and conditional edges. Studio may
-require signing in to LangSmith. The graph runs locally, without a model API key;
-the [CLI configuration](./langgraph.json) disables LangSmith tracing.
+require signing in to LangSmith. By default, the graph uses keyword
+classification and runs without a model API key; the
+[CLI configuration](./langgraph.json) disables LangSmith tracing.
+
+To use a chat model, set `CLASSIFIER_PROVIDER=llm` and `MODEL_NAME` in the
+environment or `.env` file. `MODEL_NAME` uses LangChain's `provider:model`
+format. For Azure OpenAI, use `MODEL_NAME=azure_openai:gpt-5-mini` and set
+`AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`,
+`AZURE_OPENAI_DEPLOYMENT_NAME`, and `OPENAI_API_VERSION` in the environment or
+`.env` file. These values are loaded by `Settings` and passed to LangChain's
+Azure chat model integration.
 
 To step through a run, supply this graph input in Studio:
 
@@ -58,35 +67,26 @@ uv run uvicorn support_agent.api:app --reload
 
 The service is available at `http://127.0.0.1:8000`. 
 
-Docs: http://127.0.0.1:8000/docs
-
-Health check:
-
-```bash
-curl http://127.0.0.1:8000/health
-```
-
-Support request:
-
-```bash
-curl -X POST http://127.0.0.1:8000/support \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "user_id": "candidate-test",
-    "message": "Please restore my access to the finance workspace"
-  }'
-```
+Docs: `http://127.0.0.1:8000/docs`
 
 ## Initial coding exercise
 
-User has reported that the support endpoint returns inconsistent guidance for some requests from the Support Triage Agent in Production. Understand then investigate the repository to debug.
+User has reported that the support endpoint returns inconsistent guidance for some requests from the Support Triage Agent in Production, which currently uses the deterministic KeywordClassifier. Understand then investigate the repository to debug.
 
 You may use GitHub Copilot or another coding assistant. You remain responsible for understanding and validating every change. Think aloud as you work. You do not need to fix or redesign everything; explain how you prioritize and the trade-offs behind your decisions. Preserve the public API contract and do not have tests call a live model provider.
 
 User-reported issue with the following request via Service Desk:
-User: "Please restore my permission to the finance workspace".
-Obtained: 
+
+User: 
+```json
+{
+  "user_id": "candidate-test",
+  "message": "Please restore my permission to the finance workspace?"
+}
 ```
+
+Obtained `/support` API response: 
+```json
 {
   "category": "other",
   "status": "completed",
@@ -95,11 +95,16 @@ Obtained:
   "ticket_id": null
 }
 ```
-User-expected category `access`.
 
-## Initial definition of done
+Expected `/support` API response: 
+```json
+{
+  "category": "access",
+  "status": "needs_human_review",
+  "answer": "Access changes require an authorization review. The request has been prepared for human review.",
+  "ticket_required": true,
+  "ticket_id": "TICKET-0001"
+}
+```
 
-- You can reproduce and explain the observed issue.
-- You find evidences behind your diagnosis.
-- You propose changes that are proportionate.
-- You propose means to avoid the observed issue in the future
+When you consider the task done, tell us your branch is ready for a Pull Request.

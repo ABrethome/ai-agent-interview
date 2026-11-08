@@ -1,7 +1,7 @@
 {
   "dependencies": ["."],
   "graphs": {
-    "support_triage": "./src/support_agent/graph.py:build_graph"
+    "support_triage": "./src/support_agent/graph.py:build_studio_graph"
   },
   "env": {
     "LANGSMITH_TRACING": "false"

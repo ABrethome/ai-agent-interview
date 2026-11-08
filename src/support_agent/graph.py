@@ -14,6 +14,14 @@ def build_graph() -> CompiledStateGraph:
     ticket_service = InMemoryTicketService()
 
     async def classify_request(state: SupportState) -> SupportState:
+        missing_fields = [
+            field for field in ("user_id", "message") if field not in state
+        ]
+        if missing_fields:
+            raise ValueError(
+                f"Missing required state fields: {', '.join(missing_fields)}"
+            )
+
         category = await classifier.classify(state["message"])
         return {"category": category}
 
@@ -93,3 +101,7 @@ def build_graph() -> CompiledStateGraph:
     graph.add_edge("create_ticket", "format_response")
     graph.add_edge("format_response", END)
     return graph.compile()
+
+
+def build_studio_graph() -> CompiledStateGraph:
+    return build_graph()

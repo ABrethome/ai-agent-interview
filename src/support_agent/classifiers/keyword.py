@@ -6,7 +6,7 @@ class KeywordClassifier:
         normalized = message.lower()
 
         # check if the message contains keywords for each category
-        # for instance: access, role and permission keywords should be routed to "access"
+        # e.g.: access, role and permission keywords should be routed to "access"
         if "access" in normalized or "role" in normalized:
             return "access"
         if any(term in normalized for term in ("down", "outage", "unavailable")):

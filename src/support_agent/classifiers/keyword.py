@@ -5,6 +5,8 @@ class KeywordClassifier:
     async def classify(self, message: str) -> Category:
         normalized = message.lower()
 
+        # check if the message contains keywords for each category
+        # for instance: access, role and permission keywords should be routed to "access"
         if "access" in normalized or "role" in normalized:
             return "access"
         if any(term in normalized for term in ("down", "outage", "unavailable")):

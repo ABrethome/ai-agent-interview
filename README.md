@@ -13,7 +13,7 @@ The `POST /support` endpoint accepts a user ID and a message. The agent classifi
 ## Setup
 
 ```bash
-uv sync
+uv sync --group dev
 ```
 
 ## Visualize the graph with LangGraph Studio
@@ -21,7 +21,7 @@ uv sync
 From the repository root:
 
 ```bash
-LANGGRAPH_CLI_NO_ANALYTICS=1 uv run langgraph dev --no-browser
+uv run langgraph dev --no-browser
 ```
 
 Open [LangGraph Studio](https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024)
@@ -58,7 +58,7 @@ uv run uvicorn support_agent.api:app --reload
 
 The service is available at `http://127.0.0.1:8000`. 
 
-Docs: http://127.0.0.1:8000/docs
+Docs: `http://127.0.0.1:8000/docs`
 
 Health check:
 
@@ -84,9 +84,17 @@ User has reported that the support endpoint returns inconsistent guidance for so
 You may use GitHub Copilot or another coding assistant. You remain responsible for understanding and validating every change. Think aloud as you work. You do not need to fix or redesign everything; explain how you prioritize and the trade-offs behind your decisions. Preserve the public API contract and do not have tests call a live model provider.
 
 User-reported issue with the following request via Service Desk:
-User: "Please restore my permission to the finance workspace".
-Obtained: 
+
+User: 
+```json
+{
+  "user_id": "alex",
+  "message": "Please restore my permission to the finance workspace?"
+}
 ```
+
+Obtained `/support` API response: 
+```json
 {
   "category": "other",
   "status": "completed",
@@ -95,11 +103,14 @@ Obtained:
   "ticket_id": null
 }
 ```
-User-expected category `access`.
 
-## Initial definition of done
-
-- You can reproduce and explain the observed issue.
-- You find evidences behind your diagnosis.
-- You propose changes that are proportionate.
-- You propose means to avoid the observed issue in the future
+Expected `/support` API response: 
+```json
+{
+  "category": "access",
+  "status": "needs_human_review",
+  "answer": "Access changes require an authorization review. The request has been prepared for human review.",
+  "ticket_required": true,
+  "ticket_id": "TICKET-0001"
+}
+```
